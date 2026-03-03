@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel - Math Hub Motihari</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-dark: #0a0e27;
+      --primary: #0d1b3d;
+      --secondary: #1a3a6e;
+      --accent: #00d4ff;
+      --accent-secondary: #7c3aed;
+      --gold: #ffd700;
+      --success: #10b981;
+      --danger: #ef4444;
+      --text-primary: #ffffff;
+      --text-secondary: #a0aec0;
+      --glass-bg: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --gradient-accent: linear-gradient(135deg, #00d4ff 0%, #7c3aed 100%);
+      --shadow-glow: 0 0 30px rgba(0, 212, 255, 0.3);
+      --font-heading: 'Arial Black', sans-serif;
+      --font-body: Arial, sans-serif;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--primary-dark);
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
+
+    .admin-container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 280px;
+      background: var(--primary);
+      border-right: 1px solid var(--glass-border);
+      padding: 2rem;
+      position: fixed;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 3rem;
+    }
+
+    .logo-icon {
+      width: 50px;
+      height: 50px;
+      background: var(--gradient-accent);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-heading);
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .logo-text {
+      font-family: var(--font-heading);
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    .logo-text span {
+      color: var(--accent);
+    }
+
+    .nav-menu {
+      list-style: none;
+      display: grid;
+      gap: 0.5rem;
+    }
+
+    .nav-item {
+      padding: 1rem 1.25rem;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      color: var(--text-secondary);
+    }
+
+    .nav-item:hover,
+    .nav-item.active {
+      background: var(--glass-bg);
+      color: var(--text-primary);
+    }
+
+    .nav-item.active {
+      border: 1px solid var(--accent);
+    }
+
+    .nav-icon {
+      font-size: 1.25rem;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      margin-left: 280px;
+      padding: 2rem;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .header h1 {
+      font-family: var(--font-heading);
+      font-size: 2rem;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border-radius: 10px;
+      font-family: var(--font-body);
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+      background: var(--gradient-accent);
+      color: var(--text-primary);
+    }
+
+    .btn-primary:hover {
+      box-shadow: var(--shadow-glow);
+      transform: translateY(-2px);
+    }
+
+    /* Stats Cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+    }
+
+    .stat-card h3 {
+      font-family: var(--font-heading);
+      font-size: 2.5rem;
+      color: var(--accent);
+    }
+
+    .stat-card p {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    /* Tables */
+    .table-container {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .table-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--glass-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .table-header h2 {
+      font-family: var(--font-heading);
+      font-size: 1.25rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 1rem 1.5rem;
+      text-align: left;
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    th {
+      background: rgba(0, 212, 255, 0.1);
+      font-family: var(--font-heading);
+      font-size: 0.875rem;
+      color: var(--accent);
+    }
+
+    td {
+      color: var(--text-secondary);
+    }
+
+    tr:hover td {
+      background: var(--glass-bg);
+    }
+
+    .action-btn-delete {
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.8rem;
+      background: rgba(239, 68, 68, 0.2);
+      color: var(--danger);
+      transition: all 0.3s ease;
+    }
+
+    .action-btn-delete:hover {
+      background: var(--danger);
+      color: white;
+    }
+
+    /* Batches Section */
+    .batches-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    .batch-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .batch-card:hover {
+      border-color: var(--accent);
+    }
+
+    .batch-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .batch-class {
+      font-family: var(--font-heading);
+      font-size: 1.25rem;
+    }
+
+    .batch-session {
+      padding: 0.25rem 0.75rem;
+      background: rgba(0, 212, 255, 0.2);
+      border-radius: 20px;
+      font-size: 0.8rem;
+      color: var(--accent);
+    }
+
+    .batch-details {
+      display: grid;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .batch-detail {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .batch-status {
+      padding: 0.5rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .batch-status-open { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+    .batch-status-limited { background: rgba(255, 215, 0, 0.2); color: var(--gold); }
+    .batch-status-full { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+
+    .batch-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+    }
+
+    .batch-btn {
+      padding: 0.5rem;
+      border-radius: 8px;
+      border: 1px solid var(--glass-border);
+      background: transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: all 0.3s ease;
+    }
+
+    .batch-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* Sections */
+    .section { display: none; }
+    .section.active { display: block; }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.active { display: flex; }
+
+    .modal-content {
+      background: var(--primary);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 2rem;
+      max-width: 500px;
+      width: 90%;
+    }
+
+    .modal h2 {
+      font-family: var(--font-heading);
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: var(--text-secondary);
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 10px;
+      color: var(--text-primary);
+      font-family: var(--font-body);
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .sidebar { width: 80px; padding: 1rem; }
+      .sidebar-logo { justify-content: center; }
+      .logo-text, .nav-item span:not(.nav-icon) { display: none; }
+      .nav-item { justify-content: center; padding: 1rem; }
+      .main-content { margin-left: 80px; }
+      .stats-grid, .batches-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main-content { margin-left: 0; }
+      .stats-grid, .batches-grid { grid-template-columns: 1fr; }
+      table { font-size: 0.85rem; }
+      th, td { padding: 0.75rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-container">
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-icon">∞</div>
+        <div class="logo-text">Math Hub <span>Motihari</span></div>
+      </div>
+      <ul class="nav-menu">
+        <li class="nav-item active" data-section="dashboard">
+          <span class="nav-icon">📊</span>
+          <span>Dashboard</span>
+        </li>
+        <li class="nav-item" data-section="inquiries">
+          <span class="nav-icon">📬</span>
+          <span>Inquiries</span>
+        </li>
+        <li class="nav-item" data-section="batches">
+          <span class="nav-icon">👥</span>
+          <span>Batches</span>
+        </li>
+        <li class="nav-item" data-section="settings">
+          <span class="nav-icon">⚙️</span>
+          <span>Settings</span>
+        </li>
+      </ul>
+    </aside>
+
+    <main class="main-content">
+      <div class="header">
+        <h1 id="page-title">Dashboard</h1>
+        <div class="header-actions">
+          <button class="btn btn-primary" onclick="refreshData()">🔄 Refresh</button>
+        </div>
+      </div>
+
+      <section class="section active" id="dashboard">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <h3 id="total-inquiries">0</h3>
+            <p>Total Inquiries</p>
+          </div>
+          <div class="stat-card">
+            <h3 id="today-inquiries">0</h3>
+            <p>Today's Inquiries</p>
+          </div>
+          <div class="stat-card">
+            <h3 id="total-batches">6</h3>
+            <p>Active Batches</p>
+          </div>
+          <div class="stat-card">
+            <h3 id="seats-available">36</h3>
+            <p>Total Seats</p>
+          </div>
+        </div>
+        <div class="table-container">
+          <div class="table-header">
+            <h2>Recent Inquiries</h2>
+            <button class="btn btn-primary" onclick="showSection('inquiries')">View All</button>
+          </div>
+          <table>
+            <thead>
+              <tr><th>Name</th><th>Class</th><th>Phone</th><th>Date</th></tr>
+            </thead>
+            <tbody id="recent-inquiries">
+              <tr><td colspan="4" style="text-align: center;">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="section" id="inquiries">
+        <div class="table-container">
+          <div class="table-header"><h2>All Inquiries</h2></div>
+          <table>
+            <thead>
+              <tr><th>ID</th><th>Name</th><th>Class</th><th>Phone</th><th>Email</th><th>Message</th><th>Date</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="all-inquiries">
+              <tr><td colspan="8" style="text-align: center;">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="section" id="batches">
+        <div class="batches-grid" id="batches-grid"></div>
+      </section>
+
+      <section class="section" id="settings">
+        <div class="table-container">
+          <div class="table-header"><h2>Settings</h2></div>
+          <div style="padding: 2rem;">
+            <p style="color: var(--text-secondary); margin-bottom: 1rem;">Academy settings and configuration.</p>
+            <div style="display: grid; gap: 1rem;">
+              <div class="form-group">
+                <label>Academy Name</label>
+                <input type="text" value="Math Hub Motihari" readonly>
+              </div>
+              <div class="form-group">
+                <label>Contact Phone</label>
+                <input type="text" value="+91 9XXXXXXXXX" readonly>
+              </div>
+              <div class="form-group">
+                <label>Email</label>
+                <input type="text" value="mathhubmotihari@gmail.com" readonly>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal" id="edit-batch-modal">
+    <div class="modal-content">
+      <h2>Edit Batch</h2>
+      <form id="edit-batch-form">
+        <input type="hidden" id="edit-batch-id">
+        <div class="form-group">
+          <label>Timing</label>
+          <input type="text" id="edit-batch-timing" placeholder="e.g., 6:00 AM - 7:30 AM">
+        </div>
+        <div class="form-group">
+          <label>Status</label>
+          <select id="edit-batch-status">
+            <option value="Open">Open</option>
+            <option value="Limited Seats">Limited Seats</option>
+            <option value="Full">Full</option>
+          </select>
+        </div>
+        <div class="modal-actions">
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+          <button type="button" class="btn" style="background: var(--glass-bg);" onclick="closeModal()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    let inquiries = [];
+    let batches = [];
+
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('click', () => showSection(item.dataset.section));
+    });
+
+    function showSection(sectionId) {
+      document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.toggle('active', item.dataset.section === sectionId);
+      });
+      document.querySelectorAll('.section').forEach(section => {
+        section.classList.toggle('active', section.id === sectionId);
+      });
+      const titles = { dashboard: 'Dashboard', inquiries: 'Inquiries', batches: 'Batches Management', settings: 'Settings' };
+      document.getElementById('page-title').textContent = titles[sectionId] || 'Dashboard';
+    }
+
+    async function loadInquiries() {
+      try {
+        const response = await fetch('/api/inquiries');
+        const result = await response.json();
+        if (result.success) { inquiries = result.data; renderInquiries(); updateStats(); }
+      } catch (error) { console.error('Error loading inquiries:', error); }
+    }
+
+    async function loadBatches() {
+      try {
+        const response = await fetch('/api/batches');
+        const result = await response.json();
+        if (result.success) { batches = result.data; renderBatches(); }
+      } catch (error) { console.error('Error loading batches:', error); }
+    }
+
+    function renderInquiries() {
+      const recentHtml = inquiries.slice(0, 5).map(i => 
+        `<tr><td>${i.name}</td><td>${i.class}</td><td>${i.phone}</td><td>${new Date(i.created_at).toLocaleDateString()}</td></tr>`
+      ).join('') || '<tr><td colspan="4" style="text-align: center;">No inquiries yet</td></tr>';
+      document.getElementById('recent-inquiries').innerHTML = recentHtml;
+
+      const allHtml = inquiries.map(i => 
+        `<tr><td>${i.id}</td><td>${i.name}</td><td>${i.class}</td><td>${i.phone}</td><td>${i.email || '-'}</td><td>${i.message || '-'}</td><td>${new Date(i.created_at).toLocaleDateString()}</td><td><button class="action-btn-delete" onclick="deleteInquiry(${i.id})">Delete</button></td></tr>`
+      ).join('') || '<tr><td colspan="8" style="text-align: center;">No inquiries yet</td></tr>';
+      document.getElementById('all-inquiries').innerHTML = allHtml;
+    }
+
+    function renderBatches() {
+      const html = batches.map(batch => {
+        let statusClass = batch.status === 'Limited Seats' ? 'batch-status-limited' : batch.status === 'Full' ? 'batch-status-full' : 'batch-status-open';
+        return `
+          <div class="batch-card">
+            <div class="batch-header">
+              <span class="batch-class">${batch.class_level}</span>
+              <span class="batch-session">${batch.session}</span>
+            </div>
+            <div class="batch-details">
+              <div class="batch-detail"><span>Timing</span><span>${batch.timing}</span></div>
+              <div class="batch-detail"><span>Duration</span><span>${batch.duration}</span></div>
+              <div class="batch-detail"><span>Max Students</span><span>${batch.max_students}</span></div>
+            </div>
+            <div class="batch-status ${statusClass}">${batch.status}</div>
+            <div class="batch-actions">
+              <button class="batch-btn" onclick="openEditBatch(${batch.id})">Edit</button>
+              <button class="batch-btn" onclick="viewInquiries('${batch.class_level}')">View Leads</button>
+            </div>
+          </div>`;
+      }).join('');
+      document.getElementById('batches-grid').innerHTML = html;
+    }
+
+    function updateStats() {
+      document.getElementById('total-inquiries').textContent = inquiries.length;
+      const today = new Date().toDateString();
+      document.getElementById('today-inquiries').textContent = inquiries.filter(i => new Date(i.created_at).toDateString() === today).length;
+      document.getElementById('seats-available').textContent = batches.reduce((sum, b) => sum + b.max_students, 0);
+    }
+
+    async function deleteInquiry(id) {
+      if (confirm('Delete this inquiry?')) {
+        try {
+          await fetch(`/api/inquiries/${id}`, { method: 'DELETE' });
+          loadInquiries();
+        } catch (error) { console.error('Error:', error); }
+      }
+    }
+
+    function openEditBatch(id) {
+      const batch = batches.find(b => b.id === id);
+      if (batch) {
+        document.getElementById('edit-batch-id').value = id;
+        document.getElementById('edit-batch-timing').value = batch.timing;
+        document.getElementById('edit-batch-status').value = batch.status;
+        document.getElementById('edit-batch-modal').classList.add('active');
+      }
+    }
+
+    function closeModal() {
+      document.getElementById('edit-batch-modal').classList.remove('active');
+    }
+
+    document.getElementById('edit-batch-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('edit-batch-id').value;
+      const timing = document.getElementById('edit-batch-timing').value;
+      const status = document.getElementById('edit-batch-status').value;
+      try {
+        const response = await fetch(`/api/batches/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ timing, status })
+        });
+        if ((await response.json()).success) { closeModal(); loadBatches(); }
+      } catch (error) { console.error('Error:', error); }
+    });
+
+    function refreshData() { loadInquiries(); loadBatches(); }
+
+    document.addEventListener('DOMContentLoaded', () => { loadInquiries(); loadBatches(); });
+  </script>
+</body>
+</html>
